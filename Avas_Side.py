@@ -26,6 +26,9 @@ xCoord = AnalogIn(board.A0)
 yCoord = AnalogIn(board.A1)
 zCoord = AnalogIn(board.A2)
 
+button = digitalio.DigitalInOut(board.D0)
+button.switch_to_input(pull=digitalio.Pull.UP)
+
 #internet stuff we copied and pasted
 spi = busio.SPI(board.SCK, board.MOSI, board.MISO)
 esp32_cs = DigitalInOut(board.ESP_CS)
@@ -33,12 +36,13 @@ esp32_ready = DigitalInOut(board.ESP_BUSY)
 esp32_reset = DigitalInOut(board.ESP_RESET)
 esp = adafruit_esp32spi.ESP_SPIcontrol(spi, esp32_cs, esp32_ready, esp32_reset)
 requests.set_socket(socket, esp)
-count = 0
 
-upGesture1=[2]
-upGesture1[0]=[]
-upGesture1[1]=[]
-upGesture1[2]=[]
+count = 0
+stage = 0
+upGesture1=[]
+listX = []
+listY = []
+listZ = []
 
 def offset_and_normalize(inp):
     mean_input = sum(inp) / len(inp)
@@ -67,13 +71,24 @@ while not esp.is_connected:
 print("Connected to", str(esp.ssid, "utf-8"), "\tRSSI:", esp.rssi)
 
 while True:
-    if (count < 100):
-        upGesture1[0].append(xCoord.value)
-        upGesture1[1].append(yCoord.value)
-        upGesture1[2].append(zCoord.value)
-        count += 1
-        time.sleep(0.005)
-    print("Done")
+    print(button.value)
+    if stage == 0:
+        if button.value == True:
+            stage = 1
+    if stage == 1:
+        if (count < 100):
+            listX.append(xCoord.value)
+            listY.append(yCoord.value)
+            listZ.append(zCoord.value)
+            count += 1
+        if count == 100:
+            stage = 2
+    if stage == 2:
+        upGesture1[0] = listX
+        upGesture1[1] = listY
+        upGesture1[2] = listZ
+        print(upGesture1)
+    time.sleep(0.05)
 
 #while True:
     #try:
