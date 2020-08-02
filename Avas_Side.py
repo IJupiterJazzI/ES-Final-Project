@@ -35,10 +35,19 @@ esp = adafruit_esp32spi.ESP_SPIcontrol(spi, esp32_cs, esp32_ready, esp32_reset)
 requests.set_socket(socket, esp)
 count = 0
 
-upXList1 = []
-upYList1 = []
-upZList1 = []
+upGesture1=[2]
 
+def offset_and_normalize(inp):
+    mean_input = sum(inp) / len(inp)
+    remove_offset = [x-mean_input for x in inp]
+    norm_factor = (sum([x*x for x in remove_offset]))**0.5
+    return [x/norm_factor for x in remove_offset]
+
+def correlation(x,y):
+    norm_x = offset_and_normalize(x)
+    norm_y = offset_and_normalize(y)
+    sum_of_products = sum([x*y for (x,y) in zip(norm_x,norm_y)])
+    return sum_of_products
 
 from secrets import secrets
 
@@ -56,10 +65,12 @@ print("Connected to", str(esp.ssid, "utf-8"), "\tRSSI:", esp.rssi)
 
 while True:
     if (count < 100):
-        upXList1.append(xCoord.value)
-        upYList1.append(yCoord.value)
-        upZList1.append(zCoord.value)
-        time.sleep(1.0)
+        upGesture1[0].append(xCoord.value)
+        upGesture1[1].append(yCoord.value)
+        upGesture1[2].append(zCoord.value)
+        count += 1
+        time.sleep(0.005)
+    print("Done")
 
 #while True:
     #try:
