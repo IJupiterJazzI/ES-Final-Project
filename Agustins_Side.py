@@ -60,7 +60,7 @@ scene.append(volume_status)
 #Speaker and playlist step-up
 i = 0
 state = 0
-speaker = audioio.AudioOut(board.A1)
+speaker = audioio.AudioOut(board.A0)
 playlist = ("oboe.mp3", "bach.mp3", "insp.mp3", "marimba.mp3", "sax.mp3", "shaku.mp3")
 open_song = open(playlist[i], "rb")
 print(playlist[i])
