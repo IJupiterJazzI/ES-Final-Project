@@ -37,8 +37,6 @@ esp32_reset = DigitalInOut(board.ESP_RESET)
 esp = adafruit_esp32spi.ESP_SPIcontrol(spi, esp32_cs, esp32_ready, esp32_reset)
 requests.set_socket(socket, esp)
 
-count = 0
-stage = 0
 upGesture1=[]
 listX = []
 listY = []
@@ -71,7 +69,6 @@ while not esp.is_connected:
 print("Connected to", str(esp.ssid, "utf-8"), "\tRSSI:", esp.rssi)
 
 while True:
-    print(button.value)
     if stage == 0:
         if button.value == True:
             stage = 1
@@ -80,15 +77,8 @@ while True:
             listX.append(xCoord.value)
             listY.append(yCoord.value)
             listZ.append(zCoord.value)
-            count += 1
-        if count == 100:
-            stage = 2
-    if stage == 2:
-        upGesture1[0] = listX
-        upGesture1[1] = listY
-        upGesture1[2] = listZ
-        print(upGesture1)
-    time.sleep(0.05)
+            time.sleep(0.02)
+
 
 #while True:
     #try:
