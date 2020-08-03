@@ -37,7 +37,7 @@ esp32_reset = DigitalInOut(board.ESP_RESET)
 esp = adafruit_esp32spi.ESP_SPIcontrol(spi, esp32_cs, esp32_ready, esp32_reset)
 requests.set_socket(socket, esp)
 
-upGesture1=[]
+userGesture=[]
 listX = []
 listY = []
 listZ = []
@@ -72,12 +72,38 @@ while True:
     if stage == 0:
         if button.value == True:
             stage = 1
-    if stage == 1:
-        if (count < 100):
+    elif stage == 1:
+        if button.value != True:
+            stage = 2
+    elif stage == 2:
+        if count < 100:
             listX.append(xCoord.value)
             listY.append(yCoord.value)
             listZ.append(zCoord.value)
             time.sleep(0.02)
+        if count == 100:
+            userGesture[0] = listX
+            userGesture[1] = listY
+            userGesture[2] = listZ
+            stage == 3
+    elif stage == 3:
+        upCorr1 = correlation(userGesture, upGesture1)
+        upCorr2 = correlation(userGesture, upGesture2)
+        upCorr3 = correlation(userGesture, upGesture3)
+        upCorr4 = correlation(userGesture, upGesture4)
+        upCorr5 = correlation(userGesture, upGesture5)
+        upCorr6 = correlation(userGesture, upGesture6)
+        upCorr7 = correlation(userGesture, upGesture7)
+        upCorr8 = correlation(userGesture, upGesture8)
+        upCorr9 = correlation(userGesture, upGesture9)
+        upCorr10 = correlation(userGesture, upGesture10)
+        upCorrAvg = (upCorr1+upCorr2+upCorr3+upCorr3+upCorr4+upCorr5+upCorr6+upCorr7+upCorr8+upCorr9+upCorr10) / 10
+
+        stage = 4
+    elif stage == 4:
+        #Depending on which correlation # is the largest
+        #that string will be sent to the website
+
 
 
 #while True:
