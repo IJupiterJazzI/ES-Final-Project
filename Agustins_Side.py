@@ -102,7 +102,7 @@ while True:
         speaker.play(current_song)
         while speaker.playing:
             try:
-                r = requests.get("http://608dev.net/sandbox/mostec/speaker?string")#I just ended up calling it "string" but idk
+                r = requests.get("http://608dev.net/sandbox/mostec/speaker?gesture")#I just ended up calling it "string" but idk
                 print(r.text)
                 if r.text == "skip song":
                     i += 1
@@ -139,7 +139,7 @@ while True:
                 elif r.text == "play/pause":
                     if play_pause_state == 0: #if it was already playing
                         speaker.pause()
-                        play_pause_state = 1 #change state to paused 
+                        play_pause_state = 1 #change state to paused
                         state = 0 #Go back to passive state
                     elif play_pause_state == 1: #if it was already paused
                         speaker.resume()
@@ -149,5 +149,4 @@ while True:
                     state = 0
             except Exception as e:
                 print(e)
-            time.sleep(0.04) 
-
+            time.sleep(0.04)

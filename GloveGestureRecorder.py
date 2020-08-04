@@ -45,19 +45,6 @@ listX = []
 listY = []
 listZ = []
 
-# These next two fuctions check for the correlation between two different lists of lists
-def offset_and_normalize(inp):
-    mean_input = sum(inp) / len(inp)
-    remove_offset = [x-mean_input for x in inp]
-    norm_factor = (sum([x*x for x in remove_offset]))**0.5
-    return [x/norm_factor for x in remove_offset]
-
-def correlation(x,y):
-    norm_x = offset_and_normalize(x)
-    norm_y = offset_and_normalize(y)
-    sum_of_products = sum([x*y for (x,y) in zip(norm_x,norm_y)])
-    return sum_of_products
-
 # wifi set up stuffs
 from secrets import secrets
 

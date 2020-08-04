@@ -49,19 +49,6 @@ corrList = []
 
 finalGesture = "no gesture"
 
-# These next two functions check for the correlation between two different lists of lists
-def offset_and_normalize(inp):
-    mean_input = sum(inp) / len(inp)
-    remove_offset = [x-mean_input for x in inp]
-    norm_factor = (sum([x*x for x in remove_offset]))**0.5
-    return [x/norm_factor for x in remove_offset]
-
-def correlation(x,y):
-    norm_x = offset_and_normalize(x)
-    norm_y = offset_and_normalize(y)
-    sum_of_products = sum([x*y for (x,y) in zip(norm_x,norm_y)])
-    return sum_of_products
-
 # wifi set up stuffs
 from secrets import secrets
 
@@ -95,12 +82,13 @@ while True:
             listX.append(xCoord.value)
             listY.append(yCoord.value)
             listZ.append(zCoord.value)
+            count += 1
             time.sleep(0.02)
         if count == 100:
             # append the x,y,z lists to the userGesture list
-            userGesture[0] = listX
-            userGesture[1] = listY
-            userGesture[2] = listZ
+            userGesture.append(listX)
+            userGesture.append(listY)
+            userGesture.append(listZ)
             stage == 3
     elif stage == 3:
         # STAGE 03: Calculates the correlation between the user input and
@@ -108,55 +96,55 @@ while True:
         # values are averaged for each gesture.
 
         # RAISE VOLUME/UP GESTURE CORRELATION
-        upCorr1 = correlation(userGesture, GestureExampleLists.upGesture1)
-        upCorr2 = correlation(userGesture, GestureExampleLists.upGesture2)
-        upCorr3 = correlation(userGesture, GestureExampleLists.upGesture3)
-        upCorr4 = correlation(userGesture, GestureExampleLists.upGesture4)
-        upCorr5 = correlation(userGesture, GestureExampleLists.upGesture5)
-        upCorr6 = correlation(userGesture, GestureExampleLists.upGesture6)
-        upCorr7 = correlation(userGesture, GestureExampleLists.upGesture7)
-        upCorr8 = correlation(userGesture, GestureExampleLists.upGesture8)
-        upCorr9 = correlation(userGesture, GestureExampleLists.upGesture9)
-        upCorr10 = correlation(userGesture, GestureExampleLists.upGesture10)
+        upCorr1 = GestureFunctions.corrForListsOfLists(userGesture, GestureExampleLists.upGesture1)
+        upCorr2 = GestureFunctions.corrForListsOfLists(userGesture, GestureExampleLists.upGesture2)
+        upCorr3 = GestureFunctions.corrForListsOfLists(userGesture, GestureExampleLists.upGesture3)
+        upCorr4 = GestureFunctions.corrForListsOfLists(userGesture, GestureExampleLists.upGesture4)
+        upCorr5 = GestureFunctions.corrForListsOfLists(userGesture, GestureExampleLists.upGesture5)
+        upCorr6 = GestureFunctions.corrForListsOfLists(userGesture, GestureExampleLists.upGesture6)
+        upCorr7 = GestureFunctions.corrForListsOfLists(userGesture, GestureExampleLists.upGesture7)
+        upCorr8 = GestureFunctions.corrForListsOfLists(userGesture, GestureExampleLists.upGesture8)
+        upCorr9 = GestureFunctions.corrForListsOfLists(userGesture, GestureExampleLists.upGesture9)
+        upCorr10 = GestureFunctions.corrForListsOfLists(userGesture, GestureExampleLists.upGesture10)
         upCorrAvg = (upCorr1+upCorr2+upCorr3+upCorr3+upCorr4+upCorr5+upCorr6+upCorr7+upCorr8+upCorr9+upCorr10) / 10
 
         # LOWER VOLUME/DOWN GESTURE CORRELATION
-        downCorr1 = correlation(userGesture, GestureExampleLists.downGesture1)
-        downCorr2 = correlation(userGesture, GestureExampleLists.downGesture2)
-        downCorr3 = correlation(userGesture, GestureExampleLists.downGesture3)
-        downCorr4 = correlation(userGesture, GestureExampleLists.downGesture4)
-        downCorr5 = correlation(userGesture, GestureExampleLists.downGesture5)
-        downCorr6 = correlation(userGesture, GestureExampleLists.downGesture6)
-        downCorr7 = correlation(userGesture, GestureExampleLists.downGesture7)
-        downCorr8 = correlation(userGesture, GestureExampleLists.downGesture8)
-        downCorr9 = correlation(userGesture, GestureExampleLists.downGesture9)
-        downCorr10 = correlation(userGesture, GestureExampleLists.downGesture10)
+        downCorr1 = GestureFunctions.corrForListsOfLists(userGesture, GestureExampleLists.downGesture1)
+        downCorr2 = GestureFunctions.corrForListsOfLists(userGesture, GestureExampleLists.downGesture2)
+        downCorr3 = GestureFunctions.corrForListsOfLists(userGesture, GestureExampleLists.downGesture3)
+        downCorr4 = GestureFunctions.corrForListsOfLists(userGesture, GestureExampleLists.downGesture4)
+        downCorr5 = GestureFunctions.corrForListsOfLists(userGesture, GestureExampleLists.downGesture5)
+        downCorr6 = GestureFunctions.corrForListsOfLists(userGesture, GestureExampleLists.downGesture6)
+        downCorr7 = GestureFunctions.corrForListsOfLists(userGesture, GestureExampleLists.downGesture7)
+        downCorr8 = GestureFunctions.corrForListsOfLists(userGesture, GestureExampleLists.downGesture8)
+        downCorr9 = GestureFunctions.corrForListsOfLists(userGesture, GestureExampleLists.downGesture9)
+        downCorr10 = GestureFunctions.corrForListsOfLists(userGesture, GestureExampleLists.downGesture10)
         downCorrAvg = (downCorr1+downCorr2+downCorr3+downCorr3+downCorr4+downCorr5+downCorr6+downCorr7+downCorr8+downCorr9+downCorr10) / 10
 
         # GO BACK/LEFT GESTURE CORRELATION
-        leftCorr1 = correlation(userGesture, GestureExampleLists.leftGesture1)
-        leftCorr2 = correlation(userGesture, GestureExampleLists.leftGesture2)
-        leftCorr3 = correlation(userGesture, GestureExampleLists.leftGesture3)
-        leftCorr4 = correlation(userGesture, GestureExampleLists.leftGesture4)
-        leftCorr5 = correlation(userGesture, GestureExampleLists.leftGesture5)
-        leftCorr6 = correlation(userGesture, GestureExampleLists.leftGesture6)
-        leftCorr7 = correlation(userGesture, GestureExampleLists.leftGesture7)
-        leftCorr8 = correlation(userGesture, GestureExampleLists.leftGesture8)
-        leftCorr9 = correlation(userGesture, GestureExampleLists.leftGesture9)
-        leftCorr10 = correlation(userGesture, GestureExampleLists.leftGesture10)
+        leftCorr1 = corrForListsOfLists(userGesture, GestureExampleLists.leftGesture1)
+        leftCorr2 = corrForListsOfLists(userGesture, GestureExampleLists.leftGesture2)
+        leftCorr3 = corrForListsOfLists(userGesture, GestureExampleLists.leftGesture3)
+        leftCorr4 = corrForListsOfLists(userGesture, GestureExampleLists.leftGesture4)
+        leftCorr5 = corrForListsOfLists(userGesture, GestureExampleLists.leftGesture5)
+        leftCorr6 = corrForListsOfLists(userGesture, GestureExampleLists.leftGesture6)
+        leftCorr7 = corrForListsOfLists(userGesture, GestureExampleLists.leftGesture7)
+        leftCorr8 = corrForListsOfLists(userGesture, GestureExampleLists.leftGesture8)
+        leftCorr9 = corrForListsOfLists(userGesture, GestureExampleLists.leftGesture9)
+        leftCorr10 = corrForListsOfLists(userGesture, GestureExampleLists.leftGesture10)
         leftCorrAvg = (leftCorr1+leftCorr2+leftCorr3+leftCorr3+leftCorr4+leftCorr5+leftCorr6+leftCorr7+leftCorr8+leftCorr9+leftCorr10) / 10
 
         # SKIP SONG/RIGHT GESTURE CORRELATION
-        rightCorr1 = correlation(userGesture, GestureExampleLists.rightGesture1)
-        rightCorr2 = correlation(userGesture, GestureExampleLists.rightGesture2)
-        rightCorr3 = correlation(userGesture, GestureExampleLists.rightGesture3)
-        rightCorr4 = correlation(userGesture, GestureExampleLists.rightGesture4)
-        rightCorr5 = correlation(userGesture, GestureExampleLists.rightGesture5)
-        rightCorr6 = correlation(userGesture, GestureExampleLists.rightGesture6)
-        rightCorr7 = correlation(userGesture, GestureExampleLists.rightGesture7)
-        rightCorr8 = correlation(userGesture, GestureExampleLists.rightGesture8)
-        rightCorr9 = correlation(userGesture, GestureExampleLists.rightGesture9)
-        rightCorr10 = correlation(userGesture, GestureExampleLists.rightGesture10)
+        rightCorr1 = corrForListsOfLists(userGesture, GestureExampleLists.rightGesture1)
+        rightCorr2 = corrForListsOfLists(userGesture, GestureExampleLists.rightGesture2)
+        rightCorr3 = corrForListsOfLists(userGesture, GestureExampleLists.rightGesture3)
+        rightCorr4 = corrForListsOfLists(userGesture, GestureExampleLists.rightGesture4)
+        rightCorr5 = corrForListsOfLists(userGesture, GestureExampleLists.rightGesture5)
+        rightCorr6 = corrForListsOfLists(userGesture, GestureExampleLists.rightGesture6)
+        rightCorr7 = corrForListsOfLists(userGesture, GestureExampleLists.rightGesture7)
+        rightCorr8 = corrForListsOfLists(userGesture, GestureExampleLists.rightGesture8)
+        rightCorr9 = corrForListsOfLists(userGesture, GestureExampleLists.rightGesture9)
+        rightCorr10 = corrForListsOfLists(userGesture, GestureExampleLists.rightGesture10)
         rightCorrAvg = (rightCorr1+rightCorr2+rightCorr3+rightCorr3+rightCorr4+rightCorr5+rightCorr6+rightCorr7+rightCorr8+rightCorr9+rightCorr10) / 10
 
         # MASTER LIST OF ALL GESTURE CORRELATION AVERAGES
@@ -186,7 +174,7 @@ while True:
         # This posts the gesture to the speaker website so that the speaker knows
         # which gesture was done and in effect, what command the speaker needs to do
         try:
-            s = "http://608dev.net/sandbox/mostec/speaker?string={}".format(finalGesture)
+            s = "http://608dev.net/sandbox/mostec/speaker?gesture={}".format(finalGesture)
             c = requests.post(s)
             print (s)
         except Exception as e:
@@ -202,4 +190,4 @@ while True:
         listZ.clear()
         corrList.clear()
         finalGesture = "no gesture"
-        count =0
+        count = 0
