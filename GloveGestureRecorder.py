@@ -37,6 +37,7 @@ esp32_reset = DigitalInOut(board.ESP_RESET)
 esp = adafruit_esp32spi.ESP_SPIcontrol(spi, esp32_cs, esp32_ready, esp32_reset)
 requests.set_socket(socket, esp)
 
+# These are the lists that will hold the accelerometer data from the user's gesture input
 count = 0
 stage = 0
 upGesture1=[]
@@ -44,6 +45,7 @@ listX = []
 listY = []
 listZ = []
 
+# These next two fuctions check for the correlation between two different lists of lists
 def offset_and_normalize(inp):
     mean_input = sum(inp) / len(inp)
     remove_offset = [x-mean_input for x in inp]
@@ -56,6 +58,7 @@ def correlation(x,y):
     sum_of_products = sum([x*y for (x,y) in zip(norm_x,norm_y)])
     return sum_of_products
 
+# wifi set up stuffs
 from secrets import secrets
 
 if esp.status == adafruit_esp32spi.WL_IDLE_STATUS:
@@ -73,16 +76,22 @@ print(button.value)
 
 while True:
     if stage == 0:
+        # Checks if button is pushed
         if button.value:
             stage = 1
     if stage == 1:
+        # This code records the users gesture by adding the x, y, and z
+        # values from the accelerometer to three different lists.
+        # Then, these lists are printed out.
         if (count < 100):
+            # Append the x,y,z data to the lists
             listX.append(xCoord.value)
             listY.append(yCoord.value)
             listZ.append(zCoord.value)
             count += 1
             time.sleep(0.02)
         if count == 100:
+            # The lists are printed out
             print("[")
             print(listX)
             print(",")
@@ -92,6 +101,9 @@ while True:
             print("]")
             stage = 2
     if stage == 2:
+        # Clear the lists and reset the code so that
+        # it is ready to collect and print out a new
+        # list of lists of data
         if button.value == False:
             listX.clear()
             listY.clear()

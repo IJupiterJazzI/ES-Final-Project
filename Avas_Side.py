@@ -39,12 +39,14 @@ esp = adafruit_esp32spi.ESP_SPIcontrol(spi, esp32_cs, esp32_ready, esp32_reset)
 requests.set_socket(socket, esp)
 
 stage = 0
+# These are the lists that will hold the accelerometer data from the user's gesture input
 userGesture=[]
 listX = []
 listY = []
 listZ = []
 corrList = []
 
+# These next two fuctions check for the correlation between two different lists of lists
 def offset_and_normalize(inp):
     mean_input = sum(inp) / len(inp)
     remove_offset = [x-mean_input for x in inp]
@@ -57,6 +59,7 @@ def correlation(x,y):
     sum_of_products = sum([x*y for (x,y) in zip(norm_x,norm_y)])
     return sum_of_products
 
+# wifi set up stuffs
 from secrets import secrets
 
 if esp.status == adafruit_esp32spi.WL_IDLE_STATUS:
@@ -73,23 +76,35 @@ print("Connected to", str(esp.ssid, "utf-8"), "\tRSSI:", esp.rssi)
 
 while True:
     if stage == 0:
+        # Checks if button is pushed
         if button.value == True:
             stage = 1
     elif stage == 1:
+        # Checks if button is released
         if button.value != True:
             stage = 2
     elif stage == 2:
+        # This code records the users gesture by adding the x, y, and z
+        # values from the accelerometer to three different lists that
+        # are then combined into one singular userGesture list
         if count < 100:
+            # append the x,y,z data to the lists
             listX.append(xCoord.value)
             listY.append(yCoord.value)
             listZ.append(zCoord.value)
             time.sleep(0.02)
         if count == 100:
+            # append the x,y,z lists to the userGesture list
             userGesture[0] = listX
             userGesture[1] = listY
             userGesture[2] = listZ
             stage == 3
     elif stage == 3:
+        # Calculates the correlation between the user input and the Example
+        # Gesture Lists for each gesture. Then, those correlation values 
+        # are averaged for each gesture.
+
+        # RAISE VOLUME/UP GESTURE CORRELATION
         upCorr1 = correlation(userGesture, upGesture1)
         upCorr2 = correlation(userGesture, upGesture2)
         upCorr3 = correlation(userGesture, upGesture3)
@@ -102,6 +117,7 @@ while True:
         upCorr10 = correlation(userGesture, upGesture10)
         upCorrAvg = (upCorr1+upCorr2+upCorr3+upCorr3+upCorr4+upCorr5+upCorr6+upCorr7+upCorr8+upCorr9+upCorr10) / 10
 
+        # LOWER VOLUME/DOWN GESTURE CORRELATION
         downCorr1 = correlation(userGesture, downGesture1)
         downCorr2 = correlation(userGesture, downGesture2)
         downCorr3 = correlation(userGesture, downGesture3)
@@ -114,6 +130,7 @@ while True:
         downCorr10 = correlation(userGesture, downGesture10)
         downCorrAvg = (downCorr1+downCorr2+downCorr3+downCorr3+downCorr4+downCorr5+downCorr6+downCorr7+downCorr8+downCorr9+downCorr10) / 10
 
+        # GO BACK/LEFT GESTURE CORRELATION
         leftCorr1 = correlation(userGesture, leftGesture1)
         leftCorr2 = correlation(userGesture, leftGesture2)
         leftCorr3 = correlation(userGesture, leftGesture3)
@@ -126,6 +143,7 @@ while True:
         leftCorr10 = correlation(userGesture, leftGesture10)
         leftCorrAvg = (leftCorr1+leftCorr2+leftCorr3+leftCorr3+leftCorr4+leftCorr5+leftCorr6+leftCorr7+leftCorr8+leftCorr9+leftCorr10) / 10
 
+        # SKIP SONG/RIGHT GESTURE CORRELATION
         rightCorr1 = correlation(userGesture, rightGesture1)
         rightCorr2 = correlation(userGesture, rightGesture2)
         rightCorr3 = correlation(userGesture, rightGesture3)
@@ -138,6 +156,7 @@ while True:
         rightCorr10 = correlation(userGesture, rightGesture10)
         rightCorrAvg = (rightCorr1+rightCorr2+rightCorr3+rightCorr3+rightCorr4+rightCorr5+rightCorr6+rightCorr7+rightCorr8+rightCorr9+rightCorr10) / 10
 
+        # MASTER LIST OF ALL GESTURE CORRELATION AVERAGES
         corrList = [upCorrAvg, downCorrAvg, leftCorrAvg, rightCorrAvg]
 
         stage = 4
