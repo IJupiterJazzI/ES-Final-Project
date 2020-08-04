@@ -74,6 +74,9 @@ while not esp.is_connected:
         continue
 print("Connected to", str(esp.ssid, "utf-8"), "\tRSSI:", esp.rssi)
 
+#idk if we have a variable but im making one in this dummy code
+finalOut = ""
+
 while True:
     if stage == 0:
         # Checks if button is pushed
@@ -161,16 +164,22 @@ while True:
 
         stage = 4
     elif stage == 4:
-        print(upCorrGesture)
+        if max(corrList) < #some number:
+            finalOut = "no gesture"
+        elif max(corrList) == upCorrAvg:
+            finalOut = "up gesture"
+        elif max(corrList) == downCorrAvg:
+            finalOut = "down gesture"
+        elif max(corrList) == leftCorrAvg:
+            finalOut = "left gesture"
+        elif max(corrList) == rightCorrAvg:
+            finalOut = "right gesture"
 
         #Depending on which correlation # is the largest
         #that string will be sent to the website
 
-
-
-#while True:
-    #try:
-        #what i think should work
-        #s = "http://608dev.net/sandbox/mostec/speaker?x={}&y={}&z={}".format(x.value,y.value,z.value)
-       # c = requests.post(s)
-       # print (s)
+    #this is the format for the posting stuff, although i dont know if its gonna work immediately
+    try:
+        s = "http://608dev.net/sandbox/mostec/speaker?string={}".format(finalOut)
+        c = requests.post(s)
+        print (s)
