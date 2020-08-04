@@ -80,11 +80,11 @@ print("Connected to", str(esp.ssid, "utf-8"), "\tRSSI:", esp.rssi)
 while True:
     if stage == 0:
         # STAGE 00:Checks if button is pushed
-        if button.value == True:
+        if button.value != True:
             stage = 1
     elif stage == 1:
         #  STAGE 01:Checks if button is released
-        if button.value != True:
+        if button.value == True:
             stage = 2
     elif stage == 2:
         # STAGE 02:This code records the users gesture by adding the
@@ -203,6 +203,3 @@ while True:
         corrList.clear()
         finalGesture = "no gesture"
         count =0
-
-        if button.value != True:
-            stage = 0

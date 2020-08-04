@@ -77,9 +77,9 @@ print(button.value)
 while True:
     if stage == 0:
         # Checks if button is pushed
-        if button.value:
+        if button.value != True:
             stage = 1
-    if stage == 1:
+    elif stage == 1:
         # This code records the users gesture by adding the x, y, and z
         # values from the accelerometer to three different lists.
         # Then, these lists are printed out.
@@ -100,22 +100,14 @@ while True:
             print(listZ)
             print("]")
             stage = 2
-    if stage == 2:
+    elif stage == 2:
         # Clear the lists and reset the code so that
         # it is ready to collect and print out a new
         # list of lists of data
-        if button.value == False:
+        if button.value:
             listX.clear()
             listY.clear()
             listZ.clear()
             count = 0
             print("Ready for the next gesture")
             stage = 0
-
-
-#while True:
-    #try:
-        #what i think should work
-        #s = "http://608dev.net/sandbox/mostec/speaker?x={}&y={}&z={}".format(x.value,y.value,z.value)
-       # c = requests.post(s)
-       # print (s)

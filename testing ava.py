@@ -81,11 +81,11 @@ finalOut = ""
 while True:
     if stage == 0:
         # Checks if button is pushed
-        if button.value == True:
+        if button.value != True:
             stage = 1
     elif stage == 1:
         # Checks if button is released
-        if button.value != True:
+        if button.value == True:
             stage = 2
     elif stage == 2:
         # This code records the users gesture by adding the x, y, and z
