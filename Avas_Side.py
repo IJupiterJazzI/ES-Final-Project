@@ -19,6 +19,7 @@ from digitalio import DigitalInOut
 import adafruit_esp32spi.adafruit_esp32spi_socket as socket
 from adafruit_esp32spi import adafruit_esp32spi
 import adafruit_requests as requests
+import GestureExampleLists
 
 #x,y,z for accelerometer
 from analogio import AnalogIn
@@ -41,6 +42,7 @@ userGesture=[]
 listX = []
 listY = []
 listZ = []
+corrList = []
 
 def offset_and_normalize(inp):
     mean_input = sum(inp) / len(inp)
@@ -99,8 +101,50 @@ while True:
         upCorr10 = correlation(userGesture, upGesture10)
         upCorrAvg = (upCorr1+upCorr2+upCorr3+upCorr3+upCorr4+upCorr5+upCorr6+upCorr7+upCorr8+upCorr9+upCorr10) / 10
 
+        downCorr1 = correlation(userGesture, downGesture1)
+        downCorr2 = correlation(userGesture, downGesture2)
+        downCorr3 = correlation(userGesture, downGesture3)
+        downCorr4 = correlation(userGesture, downGesture4)
+        downCorr5 = correlation(userGesture, downGesture5)
+        downCorr6 = correlation(userGesture, downGesture6)
+        downCorr7 = correlation(userGesture, downGesture7)
+        downCorr8 = correlation(userGesture, downGesture8)
+        downCorr9 = correlation(userGesture, downGesture9)
+        downCorr10 = correlation(userGesture, downGesture10)
+        downCorrAvg = (downCorr1+downCorr2+downCorr3+downCorr3+downCorr4+downCorr5+downCorr6+downCorr7+downCorr8+downCorr9+downCorr10) / 10
+
+        leftCorr1 = correlation(userGesture, leftGesture1)
+        leftCorr2 = correlation(userGesture, leftGesture2)
+        leftCorr3 = correlation(userGesture, leftGesture3)
+        leftCorr4 = correlation(userGesture, leftGesture4)
+        leftCorr5 = correlation(userGesture, leftGesture5)
+        leftCorr6 = correlation(userGesture, leftGesture6)
+        leftCorr7 = correlation(userGesture, leftGesture7)
+        leftCorr8 = correlation(userGesture, leftGesture8)
+        leftCorr9 = correlation(userGesture, leftGesture9)
+        leftCorr10 = correlation(userGesture, leftGesture10)
+        leftCorrAvg = (leftCorr1+leftCorr2+leftCorr3+leftCorr3+leftCorr4+leftCorr5+leftCorr6+leftCorr7+leftCorr8+leftCorr9+leftCorr10) / 10
+
+        rightCorr1 = correlation(userGesture, rightGesture1)
+        rightCorr2 = correlation(userGesture, rightGesture2)
+        rightCorr3 = correlation(userGesture, rightGesture3)
+        rightCorr4 = correlation(userGesture, rightGesture4)
+        rightCorr5 = correlation(userGesture, rightGesture5)
+        rightCorr6 = correlation(userGesture, rightGesture6)
+        rightCorr7 = correlation(userGesture, rightGesture7)
+        rightCorr8 = correlation(userGesture, rightGesture8)
+        rightCorr9 = correlation(userGesture, rightGesture9)
+        rightCorr10 = correlation(userGesture, rightGesture10)
+        rightCorrAvg = (rightCorr1+rightCorr2+rightCorr3+rightCorr3+rightCorr4+rightCorr5+rightCorr6+rightCorr7+rightCorr8+rightCorr9+rightCorr10) / 10
+
+        corrList = [upCorrAvg, downCorrAvg, leftCorrAvg, rightCorrAvg]
+
         stage = 4
     elif stage == 4:
+        maxCorr = max(corrList)
+
+        if maxCorr == upCorrAvg:
+
         #Depending on which correlation # is the largest
         #that string will be sent to the website
 
