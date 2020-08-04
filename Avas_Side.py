@@ -38,6 +38,7 @@ esp32_reset = DigitalInOut(board.ESP_RESET)
 esp = adafruit_esp32spi.ESP_SPIcontrol(spi, esp32_cs, esp32_ready, esp32_reset)
 requests.set_socket(socket, esp)
 
+stage = 0
 userGesture=[]
 listX = []
 listY = []
@@ -141,9 +142,7 @@ while True:
 
         stage = 4
     elif stage == 4:
-        maxCorr = max(corrList)
-
-        if maxCorr == upCorrAvg:
+        print(upCorrGesture)
 
         #Depending on which correlation # is the largest
         #that string will be sent to the website
