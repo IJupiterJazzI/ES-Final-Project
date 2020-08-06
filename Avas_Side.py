@@ -20,6 +20,7 @@ import adafruit_esp32spi.adafruit_esp32spi_socket as socket
 from adafruit_esp32spi import adafruit_esp32spi
 import adafruit_requests as requests
 from GestureExampleLists import GestureExampleLists
+import GestureFunctions
 
 #x,y,z for accelerometer
 from analogio import AnalogIn
@@ -87,9 +88,13 @@ while True:
         if count == 100:
             # append the x,y,z lists to the userGesture list
             userGesture.append(listX)
+            time.sleep(0.01)
             userGesture.append(listY)
+            time.sleep(0.01)
             userGesture.append(listZ)
-            stage == 3
+            time.sleep(0.01)
+
+            stage = 3
     elif stage == 3:
         # STAGE 03: Calculates the correlation between the user input and
         # the Example Gesture Lists for each gesture. Then, those correlation
@@ -122,29 +127,29 @@ while True:
         downCorrAvg = (downCorr1+downCorr2+downCorr3+downCorr3+downCorr4+downCorr5+downCorr6+downCorr7+downCorr8+downCorr9+downCorr10) / 10
 
         # GO BACK/LEFT GESTURE CORRELATION
-        leftCorr1 = corrForListsOfLists(userGesture, GestureExampleLists.leftGesture1)
-        leftCorr2 = corrForListsOfLists(userGesture, GestureExampleLists.leftGesture2)
-        leftCorr3 = corrForListsOfLists(userGesture, GestureExampleLists.leftGesture3)
-        leftCorr4 = corrForListsOfLists(userGesture, GestureExampleLists.leftGesture4)
-        leftCorr5 = corrForListsOfLists(userGesture, GestureExampleLists.leftGesture5)
-        leftCorr6 = corrForListsOfLists(userGesture, GestureExampleLists.leftGesture6)
-        leftCorr7 = corrForListsOfLists(userGesture, GestureExampleLists.leftGesture7)
-        leftCorr8 = corrForListsOfLists(userGesture, GestureExampleLists.leftGesture8)
-        leftCorr9 = corrForListsOfLists(userGesture, GestureExampleLists.leftGesture9)
-        leftCorr10 = corrForListsOfLists(userGesture, GestureExampleLists.leftGesture10)
+        leftCorr1 = GestureFunctions.corrForListsOfLists(userGesture, GestureExampleLists.leftGesture1)
+        leftCorr2 = GestureFunctions.corrForListsOfLists(userGesture, GestureExampleLists.leftGesture2)
+        leftCorr3 = GestureFunctions.corrForListsOfLists(userGesture, GestureExampleLists.leftGesture3)
+        leftCorr4 = GestureFunctions.corrForListsOfLists(userGesture, GestureExampleLists.leftGesture4)
+        leftCorr5 = GestureFunctions.corrForListsOfLists(userGesture, GestureExampleLists.leftGesture5)
+        leftCorr6 = GestureFunctions.corrForListsOfLists(userGesture, GestureExampleLists.leftGesture6)
+        leftCorr7 = GestureFunctions.corrForListsOfLists(userGesture, GestureExampleLists.leftGesture7)
+        leftCorr8 = GestureFunctions.corrForListsOfLists(userGesture, GestureExampleLists.leftGesture8)
+        leftCorr9 = GestureFunctions.corrForListsOfLists(userGesture, GestureExampleLists.leftGesture9)
+        leftCorr10 = GestureFunctions.corrForListsOfLists(userGesture, GestureExampleLists.leftGesture10)
         leftCorrAvg = (leftCorr1+leftCorr2+leftCorr3+leftCorr3+leftCorr4+leftCorr5+leftCorr6+leftCorr7+leftCorr8+leftCorr9+leftCorr10) / 10
 
         # SKIP SONG/RIGHT GESTURE CORRELATION
-        rightCorr1 = corrForListsOfLists(userGesture, GestureExampleLists.rightGesture1)
-        rightCorr2 = corrForListsOfLists(userGesture, GestureExampleLists.rightGesture2)
-        rightCorr3 = corrForListsOfLists(userGesture, GestureExampleLists.rightGesture3)
-        rightCorr4 = corrForListsOfLists(userGesture, GestureExampleLists.rightGesture4)
-        rightCorr5 = corrForListsOfLists(userGesture, GestureExampleLists.rightGesture5)
-        rightCorr6 = corrForListsOfLists(userGesture, GestureExampleLists.rightGesture6)
-        rightCorr7 = corrForListsOfLists(userGesture, GestureExampleLists.rightGesture7)
-        rightCorr8 = corrForListsOfLists(userGesture, GestureExampleLists.rightGesture8)
-        rightCorr9 = corrForListsOfLists(userGesture, GestureExampleLists.rightGesture9)
-        rightCorr10 = corrForListsOfLists(userGesture, GestureExampleLists.rightGesture10)
+        rightCorr1 = GestureFunctions.corrForListsOfLists(userGesture, GestureExampleLists.rightGesture1)
+        rightCorr2 = GestureFunctions.corrForListsOfLists(userGesture, GestureExampleLists.rightGesture2)
+        rightCorr3 = GestureFunctions.corrForListsOfLists(userGesture, GestureExampleLists.rightGesture3)
+        rightCorr4 = GestureFunctions.corrForListsOfLists(userGesture, GestureExampleLists.rightGesture4)
+        rightCorr5 = GestureFunctions.corrForListsOfLists(userGesture, GestureExampleLists.rightGesture5)
+        rightCorr6 = GestureFunctions.corrForListsOfLists(userGesture, GestureExampleLists.rightGesture6)
+        rightCorr7 = GestureFunctions.corrForListsOfLists(userGesture, GestureExampleLists.rightGesture7)
+        rightCorr8 = GestureFunctions.corrForListsOfLists(userGesture, GestureExampleLists.rightGesture8)
+        rightCorr9 = GestureFunctions.corrForListsOfLists(userGesture, GestureExampleLists.rightGesture9)
+        rightCorr10 = GestureFunctions.corrForListsOfLists(userGesture, GestureExampleLists.rightGesture10)
         rightCorrAvg = (rightCorr1+rightCorr2+rightCorr3+rightCorr3+rightCorr4+rightCorr5+rightCorr6+rightCorr7+rightCorr8+rightCorr9+rightCorr10) / 10
 
         # MASTER LIST OF ALL GESTURE CORRELATION AVERAGES
@@ -154,11 +159,11 @@ while True:
     elif stage == 4:
         # STAGE 04: Chooses whichever correlation number is the largest,
         # above a certain value, and then sends that command to the website.
-        print(upCorrAvg)
+        print(max(corrList))
 
         # If there is very little correlation to any of the gestures,
         # then it is registered as no gesture
-        if max(corrList) < 6: #TODO Choose number
+        if max(corrList) < 0.12: #TODO Choose number
             finalGesture = "no gesture"
         # Chooses whichever gesture that the users gesture has the most
         # correlation to at sets that to finalOut
@@ -171,12 +176,14 @@ while True:
         elif max(corrList) == rightCorrAvg:
             finalGesture = "right gesture"
 
+        print(finalGesture+ ": " + str(max(corrList)))
         # This posts the gesture to the speaker website so that the speaker knows
         # which gesture was done and in effect, what command the speaker needs to do
         try:
             s = "http://608dev.net/sandbox/mostec/speaker?gesture={}".format(finalGesture)
             c = requests.post(s)
-            print (s)
+            print ("Sent: " + finalGesture)
+
         except Exception as e:
             print(e)
 
@@ -191,3 +198,5 @@ while True:
         corrList.clear()
         finalGesture = "no gesture"
         count = 0
+
+        stage = 0
