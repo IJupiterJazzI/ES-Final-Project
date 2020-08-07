@@ -35,8 +35,24 @@ display.show(scene)
 SCREEN_WIDTH = 127
 SCREEN_HEIGHT = 159
 
+#U/D
+volume_toggle = digitalio.DigitalInOut(board.D3)
+volume_toggle.switch_to_output()
+
+#INC
+volume_increment = digitalio.DigitalInOut(board.D4)
+volume_increment.switch_to_output()
+
+#CS
+volume_store = digitalio.DigitalInOut(board.D2)
+volume_store.switch_to_output()
 
 #Volume Control
+#Test buttons
+switchVup = digitalio.DigitalInOut(board.D8)
+switchVup.switch_to_input(pull=digitalio.Pull.UP)
+switchVdown = digitalio.DigitalInOut(board.D9)
+switchVdown.switch_to_input(pull=digitalio.Pull.UP)
 switchVup = digitalio.DigitalInOut(board.D2)
 switchVup.switch_to_input(pull=digitalio.Pull.UP)
 switchVdown = digitalio.DigitalInOut(board.D3)
@@ -71,8 +87,8 @@ playlist = ("oboe.mp3", "bach.mp3", "insp.mp3", "marimba.mp3", "sax.mp3", "shaku
 open_song = open(playlist[i], "rb")
 print(playlist[i])
 current_song = audiomp3.MP3Decoder(open_song)
+speaker.play(current_song)
 
-print("playing")
 
 #internet stuff
 esp32_cs = DigitalInOut(board.ESP_CS)
@@ -82,8 +98,6 @@ esp = adafruit_esp32spi.ESP_SPIcontrol(spi, esp32_cs, esp32_ready, esp32_reset)
 requests.set_socket(socket, esp)
 
 from secrets import secrets
-
-dot = neopixel.NeoPixel(board.NEOPIXEL, 1, brightness=0.2)
 
 if esp.status == adafruit_esp32spi.WL_IDLE_STATUS:
     print("ESP32 found and in idle mode")
@@ -99,10 +113,13 @@ print("Connected to", str(esp.ssid, "utf-8"), "\tRSSI:", esp.rssi)
 
 while True:
     if state == 0:
+        volume_store.value = 0
+        volume_toggle.value = 0
+        volume_increment.value = 1
         speaker.play(current_song)
         while speaker.playing:
             try:
-                r = requests.get("http://608dev.net/sandbox/mostec/speaker?gesture")#I just ended up calling it "string" but idk
+                r = requests.get("http://608dev.net/sandbox/mostec/speaker?gesture")
                 print(r.text)
                 if r.text == "skip song":
                     i += 1
@@ -117,25 +134,81 @@ while True:
                 elif r.text == "volume up":
                     if volume_fill >= 100:
                         volume_fill = 100
+                        time.sleep(0.04)
                         state = 0
                     else:
-                        volume_fill += 9
+                        volume_fill += 2
                         scene.pop(7)
                         scene.append(volume_status)
                         scene[7] = RoundRect(volume_pos, 0 , volume_fill, int(SCREEN_HEIGHT/20), 5, fill=0x00FF00)
-                        #Potentionmeter resistance drop
+                        time.sleep(0.02)
+                        volume_store.value = 0
+                        volume_toggle.value = 1
+                        volume_increment.value = 0
+                        #Store it
+                        volume_store.value = 1
+                        volume_increment.value = 1
+                        #temporary reset
+                        volume_store.value = 0
+                        volume_toggle.value = 0
+                        volume_increment.value = 1
+                        
+                        volume_store.value = 0
+                        volume_toggle.value = 1
+                        volume_increment.value = 0
+                        #Store it
+                        volume_store.value = 1
+                        volume_increment.value = 1
+                        #temporary reset
+                        volume_store.value = 0
+                        volume_toggle.value = 0
+                        volume_increment.value = 1
+
+                        volume_store.value = 0
+                        volume_toggle.value = 1
+                        volume_increment.value = 0
+                        #Store it
+                        volume_store.value = 1
+                        volume_increment.value = 1
                         state = 0
                 elif r.text == "volume down":
                     if volume_fill <= 10:
                         volume_fill = 10
+                        time.sleep(0.02)
                         state = 0
                     else:
-                        volume_fill -= 9
+                        volume_fill -= 2
                         scene.pop(7)
                         scene.append(volume_status)
                         scene[7] = RoundRect(volume_pos, 0 , volume_fill, int(SCREEN_HEIGHT/20), 5, fill=0x00FF00)
-                        #Potentionmeter resistance rise
-                        state = 0
+                        time.sleep(0.02)
+                        volume_store.value = 0
+                        volume_toggle.value = 0
+                        volume_increment.value = 0
+                        #Store it
+                        volume_store.value = 1
+                        volume_increment.value = 1
+                        #Temporary Reset
+                        volume_store.value = 0
+                        volume_toggle.value = 0
+                        volume_increment.value = 1
+                        volume_store.value = 0
+                        volume_toggle.value = 0
+                        volume_increment.value = 0
+                        #Store it
+                        volume_store.value = 1
+                        volume_increment.value = 1
+                        #Temporary Reset
+                        volume_store.value = 0
+                        volume_toggle.value = 0
+                        volume_increment.value = 1
+                        volume_store.value = 0
+                        volume_toggle.value = 0
+                        volume_increment.value = 0
+                        #Store it
+                        volume_store.value = 1
+                        volume_increment.value = 1                  
+                        state = 0 
                 elif r.text == "play/pause":
                     if play_pause_state == 0: #if it was already playing
                         speaker.pause()
