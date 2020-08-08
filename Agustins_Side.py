@@ -48,15 +48,6 @@ volume_store = digitalio.DigitalInOut(board.D2)
 volume_store.switch_to_output()
 
 #Volume Control
-#Test buttons
-switchVup = digitalio.DigitalInOut(board.D8)
-switchVup.switch_to_input(pull=digitalio.Pull.UP)
-switchVdown = digitalio.DigitalInOut(board.D9)
-switchVdown.switch_to_input(pull=digitalio.Pull.UP)
-switchVup = digitalio.DigitalInOut(board.D2)
-switchVup.switch_to_input(pull=digitalio.Pull.UP)
-switchVdown = digitalio.DigitalInOut(board.D3)
-switchVdown.switch_to_input(pull=digitalio.Pull.UP)
 volume_fill = 10
 volume_pos = 15
 volume_bar = RoundRect(15, 0, 100, int(SCREEN_HEIGHT/20), 5, fill=0xFFFFFF)
@@ -79,7 +70,7 @@ scene.append(image_next)
 scene.append(image_back)
 scene.append(volume_status)
 #Speaker and playlist step-up
-i = 0
+i = 3
 state = 0
 play_pause_state = 0 #0 is playing and 1 is paused
 speaker = audioio.AudioOut(board.A0)
@@ -110,28 +101,41 @@ while not esp.is_connected:
         print("could not connect to AP, retrying: ", e)
         continue
 print("Connected to", str(esp.ssid, "utf-8"), "\tRSSI:", esp.rssi)
-
 while True:
-    if state == 0:
+    if state == 0: #Waiting area
         volume_store.value = 0
         volume_toggle.value = 0
         volume_increment.value = 1
         speaker.play(current_song)
+        state = 1
+    if state == 1: #Active area
         while speaker.playing:
             try:
                 r = requests.get("http://608dev.net/sandbox/mostec/speaker?gesture")
-                print(r.text)
-                if r.text == "skip song":
+                gestureDict = eval(r.text)
+                code = gestureDict['gesture']
+                print(code)
+                if code == "skip song":
                     i += 1
+                    if i>5:
+                        i = 0
+                    elif i<0:
+                        i = 5
+                    open_song = open(playlist[i], "rb")
                     current_song = audiomp3.MP3Decoder(open_song)
                     speaker.play(current_song)
                     state = 0
-                elif r.text == "back song":
+                elif code == "back song":
                     i -= 1
+                    if i>5:
+                        i = 0
+                    elif i<0:
+                        i = 5
+                    open_song = open(playlist[i], "rb")
                     current_song = audiomp3.MP3Decoder(open_song)
                     speaker.play(current_song)
                     state = 0
-                elif r.text == "volume up":
+                elif code == "volume up":
                     if volume_fill >= 100:
                         volume_fill = 100
                         time.sleep(0.04)
@@ -152,7 +156,7 @@ while True:
                         volume_store.value = 0
                         volume_toggle.value = 0
                         volume_increment.value = 1
-                        
+
                         volume_store.value = 0
                         volume_toggle.value = 1
                         volume_increment.value = 0
@@ -171,7 +175,7 @@ while True:
                         volume_store.value = 1
                         volume_increment.value = 1
                         state = 0
-                elif r.text == "volume down":
+                elif code == "volume down":
                     if volume_fill <= 10:
                         volume_fill = 10
                         time.sleep(0.02)
@@ -207,9 +211,9 @@ while True:
                         volume_increment.value = 0
                         #Store it
                         volume_store.value = 1
-                        volume_increment.value = 1                  
-                        state = 0 
-                elif r.text == "play/pause":
+                        volume_increment.value = 1
+                        state = 0
+                elif code == "play/pause":
                     if play_pause_state == 0: #if it was already playing
                         speaker.pause()
                         play_pause_state = 1 #change state to paused
@@ -218,8 +222,8 @@ while True:
                         speaker.resume()
                         play_pause_state = 0 #change state to playing
                         state = 0 #Go back to passive state
-                elif r.text == "no gesture":
+                elif code == "no gesture":
                     state = 0
             except Exception as e:
                 print(e)
-            time.sleep(0.04)
+            time.sleep(0.02)
