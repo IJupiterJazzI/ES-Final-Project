@@ -70,11 +70,11 @@ scene.append(image_next)
 scene.append(image_back)
 scene.append(volume_status)
 #Speaker and playlist step-up
-i = 3
+i = 0
 state = 0
 play_pause_state = 0 #0 is playing and 1 is paused
 speaker = audioio.AudioOut(board.A0)
-playlist = ("oboe.mp3", "bach.mp3", "insp.mp3", "marimba.mp3", "sax.mp3", "shaku.mp3")
+playlist = ("AllStar.mp3", "CarelessWhisper.mp3", "DejaVu.mp3", "Halo.mp3", "RickAstley.mp3")
 open_song = open(playlist[i], "rb")
 print(playlist[i])
 current_song = audiomp3.MP3Decoder(open_song)
@@ -117,20 +117,20 @@ while True:
                 print(code)
                 if code == "skip song":
                     i += 1
-                    if i>5:
+                    if i>4:
                         i = 0
                     elif i<0:
-                        i = 5
+                        i =4
                     open_song = open(playlist[i], "rb")
                     current_song = audiomp3.MP3Decoder(open_song)
                     speaker.play(current_song)
                     state = 0
                 elif code == "back song":
                     i -= 1
-                    if i>5:
+                    if i>4:
                         i = 0
                     elif i<0:
-                        i = 5
+                        i = 4
                     open_song = open(playlist[i], "rb")
                     current_song = audiomp3.MP3Decoder(open_song)
                     speaker.play(current_song)
