@@ -41,8 +41,9 @@ requests.set_socket(socket, esp)
 
 stage = 0
 count = 0
+playPause = 0.0
 # These are the lists that will hold the accelerometer data from the user's gesture input
-userGesture=[]
+userGesture = []
 listX = []
 listY = []
 listZ = []
@@ -69,10 +70,16 @@ while True:
     if stage == 0:
         # STAGE 00:Checks if button is pushed
         if button.value != True:
-            stage = 1
+            time.sleep(0.1)
+            if button.value == True:
+                stage = 1
+                start = time.monotonic()
     elif stage == 1:
-        #  STAGE 01:Checks if button is released
-        if button.value == True:
+        #  STAGE 01: Checks if button is released or double clicked
+        if button.value != True:
+            playPause = 100.0
+            stage = 2
+        elif time.monotonic()-start >= 0.2:
             stage = 2
     elif stage == 2:
         # STAGE 02:This code records the users gesture by adding the
@@ -153,7 +160,7 @@ while True:
         rightCorrAvg = (rightCorr1+rightCorr2+rightCorr3+rightCorr3+rightCorr4+rightCorr5+rightCorr6+rightCorr7+rightCorr8+rightCorr9+rightCorr10) / 10
 
         # MASTER LIST OF ALL GESTURE CORRELATION AVERAGES
-        corrList = [upCorrAvg, downCorrAvg, leftCorrAvg, rightCorrAvg]
+        corrList = [upCorrAvg, downCorrAvg, leftCorrAvg, rightCorrAvg, playPause]
 
         stage = 4
     elif stage == 4:
@@ -168,21 +175,22 @@ while True:
         # Chooses whichever gesture that the users gesture has the most
         # correlation to at sets that to finalOut
         elif max(corrList) == upCorrAvg:
-            finalGesture = "up gesture"
+            finalGesture = "volume up"
         elif max(corrList) == downCorrAvg:
-            finalGesture = "down gesture"
+            finalGesture = "volume down"
         elif max(corrList) == leftCorrAvg:
-            finalGesture = "left gesture"
+            finalGesture = "back song"
         elif max(corrList) == rightCorrAvg:
-            finalGesture = "right gesture"
+            finalGesture = "skip song"
+        elif max(corrList) == playPause:
+            finalGesture = "play/pause"
 
-        print(finalGesture+ ": " + str(max(corrList)))
         # This posts the gesture to the speaker website so that the speaker knows
         # which gesture was done and in effect, what command the speaker needs to do
         try:
             s = "http://608dev.net/sandbox/mostec/speaker?gesture={}".format(finalGesture)
             c = requests.post(s)
-            print ("Sent: " + finalGesture)
+            print ("Sent: " + finalGesture + "  Correlation Value: " + str(max(corrList)))
 
         except Exception as e:
             print(e)
@@ -197,6 +205,17 @@ while True:
         listZ.clear()
         corrList.clear()
         finalGesture = "no gesture"
+        playPause = 0.0
         count = 0
-
         stage = 0
+
+        time.sleep(0.3)
+        try:
+            # This wipes the gesture after it is sent and changes it to "no gesture" so that the
+            # speaker only sees the gesture command as one gesture command rather than a continuous command
+            s = "http://608dev.net/sandbox/mostec/speaker?gesture={}".format(finalGesture)
+            c = requests.post(s)
+            print ("Sent: " + finalGesture)
+
+        except Exception as e:
+            print(e)

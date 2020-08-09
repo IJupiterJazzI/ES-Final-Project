@@ -40,7 +40,8 @@ requests.set_socket(socket, esp)
 # These are the lists that will hold the accelerometer data from the user's gesture input
 count = 0
 stage = 0
-upGesture1=[]
+gestureNum = 0
+recordedGesture=[]
 listX = []
 listY = []
 listZ = []
@@ -59,12 +60,12 @@ while not esp.is_connected:
         print("could not connect to AP, retrying: ", e)
         continue
 print("Connected to", str(esp.ssid, "utf-8"), "\tRSSI:", esp.rssi)
-print(button.value)
 
 while True:
     if stage == 0:
         # Checks if button is pushed
         if button.value != True:
+            time.sleep(0.2)
             stage = 1
     elif stage == 1:
         # This code records the users gesture by adding the x, y, and z
@@ -77,15 +78,19 @@ while True:
             listZ.append(zCoord.value)
             count += 1
             time.sleep(0.02)
-        if count == 100:
+        elif count == 100:
             # The lists are printed out
-            print("[")
+            recordedGesture.append(listX)
+            time.sleep(0.01)
+            recordedGesture.append(listY)
+            time.sleep(0.01)
+            recordedGesture.append(listZ)
+            time.sleep(0.01)
+
+            print("Gesture Recording " + str(gestureNum) + ":")
             print(listX)
-            print(",")
             print(listY)
-            print(",")
             print(listZ)
-            print("]")
             stage = 2
     elif stage == 2:
         # Clear the lists and reset the code so that
@@ -95,6 +100,8 @@ while True:
             listX.clear()
             listY.clear()
             listZ.clear()
+            recordedGesture.clear()
             count = 0
+            gestureNum += 1
             print("Ready for the next gesture")
             stage = 0
