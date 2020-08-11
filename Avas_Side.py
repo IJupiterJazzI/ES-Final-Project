@@ -209,7 +209,7 @@ while True:
         count = 0
         stage = 0
 
-        time.sleep(0.3)
+        time.sleep(0.5)
         try:
             # This wipes the gesture after it is sent and changes it to "no gesture" so that the
             # speaker only sees the gesture command as one gesture command rather than a continuous command

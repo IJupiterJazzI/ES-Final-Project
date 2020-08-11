@@ -17,7 +17,7 @@ def correlation(x,y):
 # the function below modifies it so that it can take lists of lists of numbers
 def corrForListsOfLists(firstInp, secondInp):
     maxIndex = len(firstInp)-1
-    index = 0
+    index = 1
     addedCorr = 0
     while index <= maxIndex:
         singleCorr = correlation(firstInp[index], secondInp[index])
